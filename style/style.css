@@ -255,6 +255,7 @@ button {
     font-weight: 700;
     font-size: 25px;
     color: #000000;
+    cursor: pointer;
 }
 .basket__sym:last-of-type {
     border-radius: 0px 4px 4px 0px;

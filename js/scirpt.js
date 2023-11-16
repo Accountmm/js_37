@@ -37,7 +37,13 @@ const product = {
     },
 }
 
-const btns = document.querySelectorAll('.card__shop')
+const btns = document.querySelectorAll('.card__shop'),
+    shop = document.querySelector('.shop'),
+    basket = document.querySelector('.basket'),
+    basketClose = document.querySelector('.basket__close'),
+    shopItem = document.querySelector('.shop__item'),
+    basketBox = document.querySelector('.basket__box'),
+    baskeTotal = document.querySelector('.basket__total');
 
 
 btns.forEach(btn => {
@@ -50,6 +56,7 @@ btns.forEach(btn => {
 })
 
 function basketInfo() {
+    const productArr = []
     for (const key in product) {
         const pk = product[key]
         const productCard = document.querySelector(`#${key}`),
@@ -57,18 +64,85 @@ function basketInfo() {
         if (pk.amount) {
             span.classList.add('active')
             span.innerHTML = pk.amount
+            productArr.push(pk)
+
+
         } else {
             span.classList.remove('active')
+            shopItem.classList.remove(`active`)
         }
     }
+    if (productArr.length) {
+        shopItem.classList.add(`active`)
+        shopItem.textContent = productArr.length
+    }
+    basketBox.innerHTML = ""
+    for (let i = 0; i < productArr.length; i++) {
+        basketBox.innerHTML += basketProduct(productArr[i])
+
+    }
+    baskeTotal.innerHTML = totalSumm()
+    
 }
+
+window.addEventListener(`click`, (e) => { 
+    const btn = e.target
+    // console.log(btn);
+    if (btn.classList.contains(`basket__sym`)) {
+        const parent = btn.closest(`.basket__btns`),
+        parentId = parent.getAttribute('id').split('_')[0]
+        if (btn.textContent == '+')  {
+            product[parentId].amount++
+            // console.log(`my`);
+        }
+        else if (btn.textContent == '-')  {
+            product[parentId].amount--
+        }
+        basketInfo()
+        // debugger
+        // console.log(11);
+    }
+})
+
+function basketProduct(obj) {
+    return `<div class="basket__card">
+                  <img src="${obj.img}" alt="" class="basket__img">
+                  <div class="basket__info">
+                      <h3 class="baket__title">${obj.name}</h3>
+                      <p class="baket__price">${obj.Summ}</p>
+                  </div>
+                  <div class="basket__btns" id='${obj.name}_card'>
+                      <span class="basket__sym">-</span>
+                      <p class="basket__amount">${obj.amount}</p>
+                      <span class="basket__sym">+</span>
+                  </div>
+            </div>`
+}
+
+
+shop.addEventListener(`click`, () => {
+    basket.classList.add(`active`)
+})
+basketClose.addEventListener(`click`, () => {
+    basket.classList.remove(`active`)
+})
+
+function totalSumm() {
+    let total = 0 
+    for (const k in product) {
+        total += product[k].Summ
+    }
+    
+    return total
+}
+
 const cardImg = document.querySelectorAll('.card__img'),
     heaferImg = document.querySelector('.header__img');
 
 cardImg.forEach(img => {
     img.addEventListener(`click`, function () {
         let atribute = img.getAttribute(`src`)
-        return heaferImg.setAttribute(`src`,atribute) 
+        return heaferImg.setAttribute(`src`, atribute)
     })
 })
 // console.log(c_imgs);
